@@ -11,10 +11,14 @@ import externalDemo from './externalDemo';
 import previewer from './previewer';
 import jsx from './jsx';
 import isolation from './isolation';
+import header from './header';
 
 export default (raw: string, fileAbsDir: string) => {
+
+
   const processor = unified()
     .use(parse)
+    .use(header)
     .use(frontmatter)
     .use(yaml)
     .use(externalDemo)

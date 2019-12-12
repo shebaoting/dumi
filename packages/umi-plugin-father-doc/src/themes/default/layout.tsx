@@ -23,11 +23,14 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
   }
 
   getMetaForCurrentPath = () => {
-    const { route, location: { pathname } } = this.props;
+    const {
+      route,
+      location: { pathname },
+    } = this.props;
     const current = (route as any).routes.find(item => item.path === pathname);
 
     return (current && current.meta) || {};
-  }
+  };
 
   renderSideMenu() {
     const { menu, logo, title, desc } = this.props;
@@ -42,41 +45,26 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
               backgroundImage: logo && `url('${logo}')`,
             }}
           />
-            <h1>{title}</h1>
-            <p>{desc}</p>
+          <h1>{title}</h1>
+          <p>{desc}</p>
         </div>
         <ul>
-          {menu.items.map((item) => (
-            <li key={item.path || item.prefix}>
-              {
-                item.path
-                  ? (
-                    // render single routes
-                    <NavLink to={item.path} exact>
-                      {item.title}
-                    </NavLink>
-                  )
-                  : (
-                    // render child routes
-                    <>
-                      {/* use NavLink for active, but disable click by css */}
-                      <NavLink to={item.prefix}>
-                        {item.title}
+          {menu.items.map(item => (
+            <li key={item.path}>
+              <NavLink to={item.path} exact={!(item.children && item.children.length)}>
+                {item.title}
+              </NavLink>
+              {item.children && item.children.length && (
+                <ul>
+                  {item.children.map(child => (
+                    <li key={child.path}>
+                      <NavLink to={child.path} exact>
+                        {child.title}
                       </NavLink>
-                      {item.children && item.children.length && (
-                        <ul>
-                          {item.children.map((child) => (
-                            <li key={child.path}>
-                              <NavLink to={child.path} exact>
-                                {child.title}
-                              </NavLink>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  )
-              }
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
@@ -84,7 +72,7 @@ export default class Layout extends Component<ILayoutProps & RouterTypes> {
     );
   }
 
-  render () {
+  render() {
     const { children } = this.props;
     const meta = this.getMetaForCurrentPath();
     const showSidebar = meta.sidebar !== false;
